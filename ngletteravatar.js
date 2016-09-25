@@ -23,7 +23,8 @@ nla.constant('defaultSettings', {
     radius: 'border-radius:50%;',
     custombgcolor: '',
     dynamic: 'false',
-    rotatedeg: '0'
+    rotatedeg: '0',
+    class: ''
 });
 
 /**
@@ -61,7 +62,8 @@ nla.directive('ngLetterAvatar', ['defaultSettings', function (defaultSettings) {
                     alphabetcolors: scope.alphabetcolors || defaultSettings.alphabetcolors,
                     avatarCustomBGColor: attrs.avatarcustombgcolor || defaultSettings.custombgcolor,
                     dynamic: attrs.dynamic || defaultSettings.dynamic,
-                    rotatedeg: attrs.rotatedeg || defaultSettings.rotatedeg
+                    rotatedeg: attrs.rotatedeg || defaultSettings.rotatedeg,
+                    class: attrs.class || defaultSettings.class
                 };
 
                 /**
@@ -86,6 +88,9 @@ nla.directive('ngLetterAvatar', ['defaultSettings', function (defaultSettings) {
                         }
                     } else {
                         c = scope.data.substr(0, params.charCount).toUpperCase();
+                    }
+                    if(c.length === 2) {
+                        params.fontsize *= 0.8;
                     }
                     var cobj = getCharacterObject(c, params.textColor, params.fontFamily, params.fontWeight, params.fontsize);
                     var colorIndex = '';
@@ -127,17 +132,17 @@ nla.directive('ngLetterAvatar', ['defaultSettings', function (defaultSettings) {
                             var round_style = defaultSettings.radius + _style;
                             if (scope.data.indexOf('http') > -1 || scope.data.indexOf('data:image') > -1) {
                                 var img_size = 'width:' + params.width + 'px;height:' + params.height + 'px;';
-                                component = "<img src=" + scope.data + " style='" + img_size + round_style + "'  />";
+                                component = "<img src=" + scope.data + " style='" + img_size + round_style + "' class='" + params.class + "' />";
                             } else {
-                                component = "<img src=" + base + svgHtml + " style='" + round_style + "' title='" + scope.data + "' />";
+                                component = "<img src=" + base + svgHtml + " style='" + round_style + "' title='" + scope.data + "' class='" + params.class + "' />";
                             }
                         }
                     } else {
                         if (scope.data.indexOf('http') > -1 || scope.data.indexOf('data:image') > -1) {
                             var img_size = 'width:' + params.width + 'px;height:' + params.height + 'px;';
-                            component = "<img src=" + scope.data + " style='" + img_size + _style + "'  />";
+                            component = "<img src=" + scope.data + " style='" + img_size + _style + "' class='" + params.class + "' />";
                         } else {
-                            component = "<img src=" + base + svgHtml + " style='" + _style + "' title='" + scope.data + "' />";
+                            component = "<img src=" + base + svgHtml + " style='" + _style + "' title='" + scope.data + "' class='" + params.class + "' />";
                         }
                     }
 
@@ -152,7 +157,7 @@ nla.directive('ngLetterAvatar', ['defaultSettings', function (defaultSettings) {
         };
     }]);
 /**
- * Get the random colors 
+ * Get the random colors
  * @returns {String}
  */
 function getRandomColors() {
@@ -170,14 +175,14 @@ function getRandomColors() {
  */
 function getFirstAndLastName(data) {
     var names = data.split(" ");
-    if (names && names.length >= 2) {
-        var firstName = names[0];
-        var lastName = names[1];
-        if (firstName && lastName) {
+    if (names) {
+        if (names.length === 1) {
+            return data.substr(0, 1);
+        } else if(names.length >= 2){
+            var firstName = names[0];
+            var lastName = names[names.length-1];
             var text = firstName.substr(0, 1) + lastName.substr(0, 1);
             return text;
-        } else {
-            return data.substr(0, 2);
         }
     }
 }
@@ -235,4 +240,3 @@ function getCharacterObject(character, textColor, fontFamily, fontWeight, fontsi
 
     return textTag;
 }
-
